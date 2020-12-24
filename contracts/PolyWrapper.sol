@@ -41,6 +41,7 @@ contract PolyWrapper is Ownable, Pausable, ReentrancyGuard {
         _unpause();
     }
 
+
     function extractFee(address token) external {
         require(msg.sender == feeCollector, "!feeCollector");
         if (token == address(0)) {
