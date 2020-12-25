@@ -56,23 +56,23 @@ contract PolyWrapper is Ownable, Pausable, ReentrancyGuard {
         require(toChainId != 2 && toChainId != 0, "cross to eth chain");
         require(amount > fee, "amount less than fee");
         
-        _pull(fromAsset, amount, amount.sub(fee));
+        _pull(fromAsset, amount);
 
-        _push(fromAsset, toChainId, toAddress, amount);
+        _push(fromAsset, toChainId, toAddress, amount.sub(fee));
 
         emit PolyWrapperLock(fromAsset, msg.sender, toChainId, toAddress, amount.sub(fee), fee);
     }
 
     function speedUp(address fromAsset, bytes memory txHash, uint fee) external payable nonReentrant whenNotPaused {
-        _pull(fromAsset, 0, fee);
+        _pull(fromAsset, fee);
         emit PolyWrapperSpeedUp(fromAsset, txHash, msg.sender, fee);
     }
 
-    function _pull(address fromAsset, uint net, uint fee) internal {
+    function _pull(address fromAsset, uint amount) internal {
         if (fromAsset == address(0)) {
-            require(msg.value == net.add(fee), "insufficient ether");
+            require(msg.value == amount, "insufficient ether");
         } else {
-            IERC20(fromAsset).safeTransferFrom(msg.sender, address(this), net.add(fee));
+            IERC20(fromAsset).safeTransferFrom(msg.sender, address(this), amount);
         }
     }
 
