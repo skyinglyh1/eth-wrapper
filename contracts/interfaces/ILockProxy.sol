@@ -5,7 +5,10 @@ interface ILockProxy {
     function proxyHashMap(uint64) external view returns (bytes memory);
     function assetHashMap(address, uint64) external view returns (bytes memory);
     function getBalanceFor(address) external view returns (uint256);
-
+    function setManagerProxy(
+        address eccmpAddr
+    ) external;
+    
     function bindProxyHash(
         uint64 toChainId, 
         bytes calldata targetProxyHash

@@ -14,18 +14,18 @@ module.exports = async function (deployer, network, accounts) {
     await deployer.deploy(PolyWrapper, admin);
     
 
-    let config = {
-        network: {
-            owner: admin,
-            polywrapper: PolyWrapper.address,
-            lockproxy: deployedConfig[network].lockproxy
-        }
-    }
+    let config = utils.getContractAddresses();;
+    
+    config[network] = {
+        owner: admin,
+        polywrapper: PolyWrapper.address,
+        lockproxy: deployedConfig[network].lockproxy
+    };
     
     utils.writeContractAddresses(config);
 
-    let pw = await PolyWrapper.at(config.network.polywrapper);
-    await pw.setLockProxy(config.network.lockproxy, {from: admin});
+    let pw = await PolyWrapper.at(config[network].polywrapper);
+    await pw.setLockProxy(config[network].lockproxy, {from: admin});
     await pw.setFeeCollector(admin, {from: admin});
 
 }
